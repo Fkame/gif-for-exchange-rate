@@ -1,7 +1,6 @@
 package app.gifforexchangerate.controller;
 
 import app.gifforexchangerate.service.CourseByGifService;
-import jdk.jshell.Snippet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,13 +17,19 @@ public class CoursesGifController {
 
     private final CourseByGifService courseByGifService;
 
-    @GetMapping(value = "/course-by-gif", produces = MediaType.IMAGE_GIF_VALUE)
+    private static final String RESPONSE_TEMPLATE = "" +
+            "<html>" +
+            "<img src=\"%s\" alt=\"Ooops, no gif, sorry((\">" +
+            "</html>";
+
+    @GetMapping(value = "/course-by-gif", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> getGifByCurrency(
             @RequestParam(required = false, defaultValue = "RUB") String toCompare) {
 
         ResultWrap resultAndErrors = courseByGifService.getGifForCurrencyRate(toCompare);
         if (resultAndErrors.getGif().isPresent()) {
-            return ResponseEntity.ok(resultAndErrors.getGif().get());
+            String response = String.format(RESPONSE_TEMPLATE, resultAndErrors.getGif().get());
+            return ResponseEntity.ok(response);
         }
 
         ErrorText status = resultAndErrors.getErrorMessage();

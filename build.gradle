@@ -30,7 +30,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.RELEASE'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.5.RELEASE'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.4'
 }
 
 tasks.named('test') {

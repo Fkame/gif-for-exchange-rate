@@ -4,11 +4,9 @@ import app.gifforexchangerate.client.CurrencyRateApiClient;
 import app.gifforexchangerate.client.GifApiClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +57,9 @@ public class CourseByGifService {
         try {
             toCompareLatestValue = this.parseCurrencyField(latestJson, toCompare);
             toCompareYesterdayValue = this.parseCurrencyField(yesterdayJson, toCompare);
+            log.info("Parsed " + toCompare + ":" +
+                    "\n\tlatestValue = " + toCompareLatestValue +
+                    "\n\tyesterdayValue = " + toCompareYesterdayValue);
         } catch (Exception ex) {
             return ResultWrap.createError(ErrorText.API_CURRENCY_ERROR);
         }
@@ -70,8 +71,14 @@ public class CourseByGifService {
         try {
             GifJsonParser gifJsonParser = new GifJsonParser();
             GifJsonParser.GifInfo gifInfo = gifJsonParser.parseNeededData(gifJson);
+
+            log.info("Giphy data:\n\t" +
+                    gifInfo.getUrl() +
+                    "\n\t" + gifInfo.getTitle() +
+                    "\n\t" + gifInfo.getUrlToGifFile());
+
             return ResultWrap.builder()
-                    .gif(Optional.of(gifInfo.urlToGifFile))
+                    .gif(Optional.of(gifInfo.getUrlToGifFile()))
                     .build();
         } catch (Exception ex) {
            return ResultWrap.createError(ErrorText.API_GIPHY_ERROR);
@@ -90,7 +97,6 @@ public class CourseByGifService {
 
     public enum ErrorText {
         API_CURRENCY_ERROR("Не удалось получить ответ от API биржи"),
-
         API_GIPHY_ERROR("Не удалось получить ответ от API Giphy"),
         VALIDATION_ERROR("Ошибка валидации, введенного кода валюты не существует");
 

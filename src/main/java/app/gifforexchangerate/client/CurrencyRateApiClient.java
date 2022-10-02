@@ -18,5 +18,5 @@ public interface CurrencyRateApiClient {
     String getHistorical(@PathVariable("date") String date,
                                   @RequestParam("app_id") String appId,
                                   @RequestParam("base") String base,
-                                  @RequestParam("symbol") String comparingWith);
+                                  @RequestParam("symbols") String comparingWith);
 }
